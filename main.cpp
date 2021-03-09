@@ -3,7 +3,7 @@
 #include <string>
 #include <list>
 #include <vector>
-#include "Vertex.h"
+#include "Edge.h"
 #include "Dijkstra.h"
 
 using namespace std;
@@ -12,8 +12,14 @@ using namespace std;
 #define V 20 //test_graph.txt
 //#define V 4039 //facebook_combined.txt
 
-std::vector<Vertex> graph;
-static int Adj[V][V] = {{false}};
+//Graph
+std::vector<Edge> graph;
+//Adjacent Graph
+int Adj[V][V] = {{0}};
+//Changed Edges
+std::vector<Edge> ce;
+//Dijkstra object
+Dijkstra dijkstra;
 
 
 int readGraphFile(string filename){
@@ -30,10 +36,10 @@ int readGraphFile(string filename){
 
     while (input >> vertex >> neighbour){
         //cout << vertex  << " - " << neighbour << " " << endl;
-        Vertex v;
-        v.vertex_id = vertex;
-        v.neighbour_id = neighbour;
-        graph.push_back(v);
+        Edge edge;
+        edge.a = vertex;
+        edge.b = neighbour;
+        graph.push_back(edge);
     }
 
     input.close();
@@ -43,12 +49,57 @@ int readGraphFile(string filename){
 void createAdjMatrix(){
 
     for(int i = 0; i < graph.size(); i++){
-        Vertex v = graph.at(i);
-        int x = v.vertex_id;
-        int y = v.neighbour_id;
+        Edge edge = graph.at(i);
+        int x = edge.a;
+        int y = edge.b;
 
         Adj[x][y] = 1;
         Adj[y][x] = 1;
+    }
+}
+
+//Add changed edges to ce vector
+void addToChangedEdges(Edge edge){
+    //int* Dist = dijkstra.getDist();
+    ce.push_back(edge);
+
+}
+
+void addOrSnapRandomEdges(int numOfEdges){
+    cout << "-------Changing some edges-------" << endl;
+    //initialize random seed
+    srand(time(NULL));
+    for(int i = 0; i < numOfEdges; i++){
+        //rng within V range
+        int x = rand() % V;
+        int y = rand() % V;
+
+        Edge edge;
+        edge.a = x;
+        edge.b = y;
+
+        if(Adj[x][y]==0){
+            Adj[x][y] = 1;
+            Adj[y][x] = 1;
+            cout << "edge " << x << "-" << y <<" added."<<endl;
+        }
+        else{
+            Adj[x][y] = 0;
+            Adj[y][x] = 0;
+            cout << "edge " << x << "-" << y <<" snapped."<<endl;
+        }
+
+        addToChangedEdges(edge);
+    }
+}
+
+void printAdjacentMatrix(){
+    cout << "------------Adjacent matrix------------"<< endl;
+    for(int i = 0; i < V; i++){
+        for(int j = 0; j < V; j++){
+            cout << Adj[i][j] << " ";
+        }
+        cout << endl;
     }
 }
 
@@ -60,15 +111,17 @@ int main () {
     createAdjMatrix();
 
     //Print Adjacent matrix
-    cout << "Adjacent matrix: "<< endl;
-    for(int i = 0; i < V; i++){
-        for(int j = 0; j < V; j++){
-            cout << Adj[i][j] << " ";
-        }
-        cout << endl;
-    }
+    printAdjacentMatrix();
 
-    Dijkstra dijkstra;
+    //Run Dijkstra algorithm on Adjacent matrix
+
+    dijkstra.dijkstra(Adj, 0);
+
+    //snap or add random edges on graph
+    //define number of random edges to be snapped or added
+    addOrSnapRandomEdges(5);
+    //Print Adjacent matrix
+    printAdjacentMatrix();
     dijkstra.dijkstra(Adj, 0);
 
     return 0;

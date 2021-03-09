@@ -14,8 +14,17 @@ using namespace std;
 
 class Dijkstra {
 
+private:
     int Dist[V];
     int Parent[V];
+
+public: int * getDist(){
+        return Dist;
+    }
+
+public: int * getParent(){
+        return Parent;
+    }
 
     // A utility function to find the vertex with minimum distance value, from
     // the set of vertices not yet included in shortest path tree
@@ -34,15 +43,15 @@ class Dijkstra {
     // A utility function to print the constructed distance array
     int printSolution(int dist[], int parent[], int src)
     {
-        printf("---------------------------------------\n");
-        printf("Vertex Distance from Source (Vector %d):\n", src);
+        printf("---------Dijkstra Algorithm-------------\n");
+        printf("Edge Distance from Source (Vector %d):\n", src);
         for (int i = 0; i < V; i++)
             printf("%d distance from %d is %d parent %d\n", i, src, dist[i], parent[i]);
     }
 
     // Function that implements Dijkstra's single source shortest path algorithm
     // for a graph represented using adjacency matrix representation
-    public: void dijkstra(int graph[V][V], int src){
+public: void dijkstra(int graph[V][V], int src){
 
         bool sptSet[V]; // sptSet[i] will be true if vertex i is included in shortest
         // path tree or shortest distance from src to i is finalized
