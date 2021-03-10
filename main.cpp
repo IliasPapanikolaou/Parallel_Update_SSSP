@@ -5,6 +5,7 @@
 #include <vector>
 #include "Edge.h"
 #include "Dijkstra.h"
+#include "UpdateSSSP.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ std::vector<Edge> graph;
 //Adjacent Graph
 int Adj[V][V] = {{0}};
 //Changed Edges
-std::vector<Edge> ce;
+std::vector<Edge> ce; //changed Edges
 //Dijkstra object
 Dijkstra dijkstra;
 
@@ -32,13 +33,13 @@ int readGraphFile(string filename){
         return 1;
     }
     int vertex;
-    int neighbour;
+    int neighbor;
 
-    while (input >> vertex >> neighbour){
-        //cout << vertex  << " - " << neighbour << " " << endl;
+    while (input >> vertex >> neighbor){
+        //cout << vertex  << " - " << neighbor << " " << endl;
         Edge edge;
         edge.a = vertex;
-        edge.b = neighbour;
+        edge.b = neighbor;
         graph.push_back(edge);
     }
 
@@ -58,13 +59,6 @@ void createAdjMatrix(){
     }
 }
 
-//Add changed edges to ce vector
-void addToChangedEdges(Edge edge){
-    //int* Dist = dijkstra.getDist();
-    ce.push_back(edge);
-
-}
-
 void addOrSnapRandomEdges(int numOfEdges){
     cout << "-------Changing some edges-------" << endl;
     //initialize random seed
@@ -82,14 +76,17 @@ void addOrSnapRandomEdges(int numOfEdges){
             Adj[x][y] = 1;
             Adj[y][x] = 1;
             cout << "edge " << x << "-" << y <<" added."<<endl;
+            ce.push_back(edge);
         }
         else{
             Adj[x][y] = 0;
             Adj[y][x] = 0;
             cout << "edge " << x << "-" << y <<" snapped."<<endl;
+            edge.isPresent = false; //deleted edge
+            ce.push_back(edge);
         }
 
-        addToChangedEdges(edge);
+
     }
 }
 
@@ -119,10 +116,15 @@ int main () {
 
     //snap or add random edges on graph
     //define number of random edges to be snapped or added
-    addOrSnapRandomEdges(5);
+
+    addOrSnapRandomEdges(1);
+
     //Print Adjacent matrix
-    printAdjacentMatrix();
-    dijkstra.dijkstra(Adj, 0);
+    //printAdjacentMatrix();
+    //dijkstra.dijkstra(Adj, 0);
+
+    UpdateSSSP update;
+    update.updatePerChange(ce, Adj, dijkstra.getDist(), dijkstra.getParent());
 
     return 0;
 }

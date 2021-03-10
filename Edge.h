@@ -10,6 +10,7 @@ class Edge {
 public:
     int a;
     int b;
+    bool isPresent = true;
 };
 
 

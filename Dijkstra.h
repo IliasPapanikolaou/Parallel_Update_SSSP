@@ -9,6 +9,7 @@
 // Number of vertices in the graph
 #define V 20 //test_graph
 // #define V 4039 //facebook_combined.txt
+#define INF 1000000000
 
 using namespace std;
 
@@ -31,7 +32,7 @@ public: int * getParent(){
     int minDistance(int dist[], bool sptSet[])
     {
         // Initialize min value
-        int min = INT_MAX, min_index;
+        int min = INF, min_index;
 
         for (int v = 0; v < V; v++)
             if (sptSet[v] == false && dist[v] <= min)
@@ -58,7 +59,7 @@ public: void dijkstra(int graph[V][V], int src){
 
         // Initialize all distances as INFINITE and stpSet[] as false
         for (int i = 0; i < V; i++){
-            Dist[i] = INT_MAX, sptSet[i] = false;
+            Dist[i] = INF, sptSet[i] = false;
             Parent[i] = i;
         }
 
@@ -80,7 +81,7 @@ public: void dijkstra(int graph[V][V], int src){
                 // Update dist[v] only if is not in sptSet, there is an edge from
                 // u to v, and total weight of path from src to  v through u is
                 // smaller than current value of dist[v]
-                if (!sptSet[v] && graph[u][v] && Dist[u] != INT_MAX && Dist[u] + graph[u][v] < Dist[v]){
+                if (!sptSet[v] && graph[u][v] && Dist[u] != INF && Dist[u] + graph[u][v] < Dist[v]){
                     Dist[v] = Dist[u] + graph[u][v];
                     Parent[v] = u;
                 }
