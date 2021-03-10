@@ -13,5 +13,4 @@ public:
     bool isPresent = true;
 };
 
-
 #endif //ERGASIA2_EDGE_H

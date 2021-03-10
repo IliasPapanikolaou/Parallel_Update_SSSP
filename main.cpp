@@ -19,9 +19,6 @@ std::vector<Edge> graph;
 int Adj[V][V] = {{0}};
 //Changed Edges
 std::vector<Edge> ce; //changed Edges
-//Dijkstra object
-Dijkstra dijkstra;
-
 
 int readGraphFile(string filename){
 
@@ -111,20 +108,21 @@ int main () {
     printAdjacentMatrix();
 
     //Run Dijkstra algorithm on Adjacent matrix
-
+    Dijkstra dijkstra;
     dijkstra.dijkstra(Adj, 0);
 
     //snap or add random edges on graph
     //define number of random edges to be snapped or added
-
-    addOrSnapRandomEdges(1);
+    addOrSnapRandomEdges(3);
 
     //Print Adjacent matrix
     //printAdjacentMatrix();
     //dijkstra.dijkstra(Adj, 0);
 
     UpdateSSSP update;
-    update.updatePerChange(ce, Adj, dijkstra.getDist(), dijkstra.getParent());
+    update.updatePerChange(ce, Adj, dijkstra.getDist() , dijkstra.getParent());
+
+    update.updateBatchChange(ce, Adj, dijkstra.getDist() , dijkstra.getParent());
 
     return 0;
 }
