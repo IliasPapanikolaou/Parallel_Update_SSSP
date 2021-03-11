@@ -29,7 +29,7 @@ void Dijkstra::printSolution(int src) {
 
 //Algorithm 1 Paper - Dijkstra’s Algorithm for Finding SSSP
 void Dijkstra::dijkstra(int Graph[][V], int src){
-    //Initialize Dist, Parent and PriorityQueue PQ.
+    //Initialize Dist, Parent and PriorityQueue pq.
     for(int u = 0; u < V; u++){
         Dist[u] = INF;
         Parent[u] = u;
