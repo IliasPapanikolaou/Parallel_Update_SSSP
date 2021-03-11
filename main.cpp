@@ -121,18 +121,21 @@ int main () {
     //define number of random edges to be snapped or added
     addOrSnapRandomEdges(3);
 
-    //Print Adjacent matrix
+    //Print Updated Adjacent matrix
     //printAdjacentMatrix();
     //Dijkstra 2nd round
     //dijkstra.dijkstra(Adj, 0);
 
-    //UpdateSSSP update;
+    //Algorithm 2: Updating SSSP for a Single Change (Sequential Algorithm)
     updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
     updateBatchChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
     //Parallel Update with Pthreads :-(
     pthread_t threads[NUM_THREADS];
+
+
+    //Algorithm 4 with PThreads
     for(int i =  0; i < NUM_THREADS; i++){
         pthread_create(&threads[i], NULL, processVertexParallel, (void *)i);
     }

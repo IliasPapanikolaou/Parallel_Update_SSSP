@@ -172,19 +172,19 @@ void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent){
     }
 }
 
-//Algorithm 4 Step 2: Updating Affected Vertices in Parallel
-void *processVertexParallel(void *threadid){
-
-    int start, end, numOfElements, id = (long )threadid;
+//Algorithm 4: Step 2: Updating Affected Vertices in Parallel
+void *processVertexParallel(void *threadId){
+    //PThreads impl
+    int start, end, numOfElements, id = (long )threadId;
 
     numOfElements = V / NUM_THREADS;
     start = numOfElements * id;
     end = start + numOfElements;
-
+    //PThreads impl end
     bool change = true;
     while(change){
         change = false;
-        //TODO: Parallel
+        //Start - End instead of 0 to V
         for(int u = start; u < end; u++){
             if (!Affected[u]){
                 Affected[u] = false;
