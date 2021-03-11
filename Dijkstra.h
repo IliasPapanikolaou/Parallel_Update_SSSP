@@ -3,7 +3,6 @@
 
 // Number of vertices in the graph
 #define V 20 //test_graph
-// #define V 4039 //facebook_combined.txt
 #define INF 1000000000
 
 using namespace std;

@@ -178,8 +178,14 @@ void *processVertexParallel(void *threadId){
     int start, end, numOfElements, id = (long )threadId;
 
     numOfElements = V / NUM_THREADS;
-    start = numOfElements * id;
-    end = start + numOfElements;
+    start = NUM_THREADS * id;
+    //end condition for not 0 mod divisions
+    if (id != NUM_THREADS - 1) {
+        end = start + numOfElements;
+    } else {
+        end = V;
+    }
+
     //PThreads impl end
     bool change = true;
     while(change){

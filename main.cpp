@@ -12,7 +12,6 @@ using namespace std;
 
 //Number of Vertices
 #define V 20 //test_graph.txt
-//#define V 4039 //facebook_combined.txt
 #define NUM_THREADS 4
 
 //Graph
@@ -106,7 +105,6 @@ void printAdjacentMatrix(){
 int main () {
 
     string filename = "test_graph.txt";
-    //string filename = "facebook_combined.txt";
     readGraphFile(filename);
     createAdjMatrix();
 
@@ -127,15 +125,14 @@ int main () {
     //dijkstra.dijkstra(Adj, 0);
 
     //Algorithm 2: Updating SSSP for a Single Change (Sequential Algorithm)
-    updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
+    //updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
     updateBatchChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
     //Parallel Update with Pthreads :-(
     pthread_t threads[NUM_THREADS];
 
-
-    //Algorithm 4 with PThreads
+    //Algorithm 4: Step 2: Updating Affected Vertices in Parallel (PThreads)
     for(int i =  0; i < NUM_THREADS; i++){
         pthread_create(&threads[i], NULL, processVertexParallel, (void *)i);
     }
