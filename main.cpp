@@ -14,10 +14,9 @@ using namespace std;
 #define V 20 //test_graph.txt
 #define NUM_THREADS 4
 
-//Graph
-std::vector<Edge> graph;
+//edges
+std::vector<Edge> edges;
 //Adjacent Graph
-int Adj[V][V] = {{0}};
 int Graph[V][V] = {{0}};
 //Changed Edges
 std::vector<Edge> ce; //changed Edges
@@ -42,7 +41,7 @@ int readGraphFile(string filename){
         Edge edge;
         edge.a = vertex;
         edge.b = neighbor;
-        graph.push_back(edge);
+        edges.push_back(edge);
     }
 
     input.close();
@@ -51,13 +50,13 @@ int readGraphFile(string filename){
 
 void createAdjMatrix(){
 
-    for(int i = 0; i < graph.size(); i++){
-        Edge edge = graph.at(i);
+    for(int i = 0; i < edges.size(); i++){
+        Edge edge = edges.at(i);
         int x = edge.a;
         int y = edge.b;
 
-        Adj[x][y] = 1;
-        Adj[y][x] = 1;
+        Graph[x][y] = 1;
+        Graph[y][x] = 1;
     }
 }
 
@@ -74,28 +73,27 @@ void addOrSnapRandomEdges(int numOfEdges){
         edge.a = x;
         edge.b = y;
 
-        if(Adj[x][y]==0){
-            Adj[x][y] = 1;
-            Adj[y][x] = 1;
+        if(Graph[x][y] == 0){
+            Graph[x][y] = 1;
+            Graph[y][x] = 1;
             cout << "edge " << x << "-" << y <<" added."<<endl;
             ce.push_back(edge);
         }
         else{
-            Adj[x][y] = 0;
-            Adj[y][x] = 0;
+            Graph[x][y] = 0;
+            Graph[y][x] = 0;
             cout << "edge " << x << "-" << y <<" snapped."<<endl;
             edge.isPresent = false; //deleted edge
             ce.push_back(edge);
         }
     }
-    copy(&Adj[0][0], &Adj[V][V], &Graph[0][0]);
 }
 
 void printAdjacentMatrix(){
     cout << "------------Adjacent matrix------------"<< endl;
     for(int i = 0; i < V; i++){
         for(int j = 0; j < V; j++){
-            cout << Adj[i][j] << " ";
+            cout << Graph[i][j] << " ";
         }
         cout << endl;
     }
@@ -113,19 +111,19 @@ int main () {
 
     //Run Dijkstra algorithm on Adjacent matrix
     Dijkstra dijkstra;
-    dijkstra.dijkstra(Adj, 0);
+    dijkstra.dijkstra(Graph, 0);
 
-    //snap or add random edges on graph
+    //snap or add random edges on edges
     //define number of random edges to be snapped or added
     addOrSnapRandomEdges(3);
 
     //Print Updated Adjacent matrix
     //printAdjacentMatrix();
     //Dijkstra 2nd round
-    //dijkstra.dijkstra(Adj, 0);
+    //dijkstra.dijkstra(Graph, 0);
 
     //Algorithm 2: Updating SSSP for a Single Change (Sequential Algorithm)
-    //updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
+    updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
     updateBatchChange(ce, dijkstra.getDist(), dijkstra.getParent());
 

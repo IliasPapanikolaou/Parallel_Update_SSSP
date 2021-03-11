@@ -1,7 +1,7 @@
 #ifndef ERGASIA2_DIJKSTRA_H
 #define ERGASIA2_DIJKSTRA_H
 
-// Number of vertices in the graph
+// Number of vertices in the edges
 #define V 20 //test_graph
 #define INF 1000000000
 
