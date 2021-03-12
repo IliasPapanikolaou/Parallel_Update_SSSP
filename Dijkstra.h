@@ -3,6 +3,7 @@
 
 // Number of vertices in the edges
 #define V 20 //test_graph
+//#define V 20000 //large_graph.txt
 #define INF 1000000000
 
 using namespace std;

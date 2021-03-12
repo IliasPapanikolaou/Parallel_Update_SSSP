@@ -12,6 +12,7 @@
 #include "Edge.h"
 
 #define V 20
+//#define V 20000 //large_graph.txt
 #define INF 1000000000
 #define NUM_THREADS 4
 

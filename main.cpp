@@ -3,15 +3,18 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <chrono>
 #include <pthread.h>
 #include "Edge.h"
 #include "Dijkstra.h"
 #include "UpdateSSSP.h"
 
 using namespace std;
+using namespace std::chrono;
 
 //Number of Vertices
 #define V 20 //test_graph.txt
+//#define V 20000 //large_graph.txt
 #define NUM_THREADS 4
 
 //edges
@@ -103,6 +106,7 @@ void printAdjacentMatrix(){
 int main () {
 
     string filename = "test_graph.txt";
+    //string filename = "large_graph.txt";
     readGraphFile(filename);
     createAdjMatrix();
 
@@ -115,16 +119,22 @@ int main () {
 
     //snap or add random edges on edges
     //define number of random edges to be snapped or added
-    addOrSnapRandomEdges(3);
+    addOrSnapRandomEdges(5);
 
     //Print Updated Adjacent matrix
     //printAdjacentMatrix();
     //Dijkstra 2nd round
     //dijkstra.dijkstra(Graph, 0);
 
+    //Timer Start Sequential
+    auto startSequential = high_resolution_clock::now();
     //Algorithm 2: Updating SSSP for a Single Change (Sequential Algorithm)
-    //updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
+    updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
+    auto stopSequential = high_resolution_clock::now();
+    auto durationSequential = duration_cast<microseconds>(stopSequential - startSequential);
 
+    //Timer Start Parallel
+    auto startParallel = high_resolution_clock::now();
     //Parallel Update with Pthreads
     pthread_t threads[NUM_THREADS];
     struct threadArgs args[NUM_THREADS];
@@ -158,8 +168,17 @@ int main () {
         pthread_join(threads[i], NULL);
     }
 
+    //Timer Stop Parallel
+    auto stopParallel = high_resolution_clock::now();
+    auto durationParallel = duration_cast<microseconds>(stopParallel - startParallel);
+
     cout << "---------Parallel Updated SSSP-------------" << endl;
     for (int i = 0; i < V; i++)
         cout << i << " distance is " << DistUpdated[i] << " parent " << ParentUpdated[i] << endl;
+
+    cout << endl << "------Timer for Sequential Updated SSSP------" << endl;
+    cout << "Time taken: "<< durationSequential.count() << " microseconds" << endl;
+    cout << endl << "------Timer for Parallel Updated SSSP--------" << endl;
+    cout << "Time taken: "<< durationParallel.count() << " microseconds" << endl;
     return 0;
 }
