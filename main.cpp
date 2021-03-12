@@ -125,20 +125,29 @@ int main () {
     //Algorithm 2: Updating SSSP for a Single Change (Sequential Algorithm)
     updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
-    struct threadArgs args;
-    args.changedEdges = ce;
-    args.dist = dijkstra.getDist();
-    args.parent = dijkstra.getParent();
-
     //Algorithm 3: Step 1 Processing Changed Edges in Parallel
-    updateBatchChange(ce, dijkstra.getDist(), dijkstra.getParent());
+    //updateBatchChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
     //Parallel Update with Pthreads
     pthread_t threads[NUM_THREADS];
-
+    struct threadArgs args[NUM_THREADS];
+    for(int i = 0; i < NUM_THREADS; i++){
+        args[i].changedEdges = ce;
+        args[i].dist = dijkstra.getDist();
+        args[i].parent = dijkstra.getParent();
+    }
+    //Algorithm 3: Step 1 Processing Changed Edges in Parallel (Pthreads)
+    //Initialize Matrices Algorithm 3 (lines 2-5)
     for(int i =  0; i < NUM_THREADS; i++){
-        args.ThreadId = i;
-        pthread_create(&threads[i], NULL, PrintHello, &args);
+        args[i].ThreadId = i;
+        pthread_create(&threads[i], NULL, initMatricesPThreads, (void*)&args[i]);
+    }
+    for (int i = 0; i < NUM_THREADS; i++) {
+        pthread_join(threads[i], NULL);
+    }
+    for(int i =  0; i < NUM_THREADS; i++){
+        args[i].ThreadId = i;
+        pthread_create(&threads[i], NULL, updateBatchChangePThreads, (void*)&args[i]);
     }
     for (int i = 0; i < NUM_THREADS; i++) {
         pthread_join(threads[i], NULL);
@@ -151,10 +160,9 @@ int main () {
     for (int i = 0; i < NUM_THREADS; i++) {
         pthread_join(threads[i], NULL);
     }
+
     cout << "---------Parallel Updated SSSP-------------" << endl;
     for (int i = 0; i < V; i++)
         cout << i << " distance is " << DistUpdated[i] << " parent " << ParentUpdated[i] << endl;
-
-
     return 0;
 }

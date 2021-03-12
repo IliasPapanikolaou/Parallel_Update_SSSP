@@ -100,21 +100,61 @@ void processVertex(int u){
     }
 }
 
-//Algorithm 3 Step1: Processing Changed Edges in Parallel
-void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent){
-    //TODO: Parallel
+//Initialize Matrices Algorithm 3
+void *initMatricesPThreads(void *args){
+    //PThreads impl
+    int start, end, numOfElements, id;
+
+    struct threadArgs *arg= (struct threadArgs*)args;
+    id = (*arg).ThreadId;
+
+    numOfElements = V / NUM_THREADS;
+    start = numOfElements * id;
+    //end condition for not 0 mod divisions
+    if (id != NUM_THREADS - 1) {
+        end = start + numOfElements;
+    } else {
+        end = V;
+    }
     //Initialize Updated Distance and Parent
-    for(int u = 0; u < V; u++){
-        DistUpdated[u] = Dist[u];
-        ParentUpdated[u] = Parent[u];
+    for(int u = start; u < end; u++){
+        DistUpdated[u] = (*arg).dist[u];
+        ParentUpdated[u] = (*arg).parent[u];
         Affected[u] = false;
     }
-    //TODO: Parallel
+}
+
+//Algorithm 3 Step1: Processing Changed Edges in Parallel
+void *updateBatchChangePThreads(void *args){
+
+    //PThreads impl
+    int start, end, numOfElements, id;
+    vector<Edge> ce;
+    struct threadArgs *arg= (struct threadArgs*)args;
+    id = (*arg).ThreadId;
+    ce = (*arg).changedEdges;
+    numOfElements = ce.size() / NUM_THREADS;
+    //If vector is < than number of threads
+    if(numOfElements > 0){
+        start = numOfElements * id;
+        //end condition for not 0 mod divisions
+        if (id != NUM_THREADS - 1) {
+            end = start + numOfElements;
+        } else {
+            end = ce.size();
+        }
+    }
+    else{
+        if(id >= ce.size()){
+            pthread_exit(NULL);
+        }
+    }
+    //Parallel Pthreads
     //Find the affected vertex, x
-    for(int i = 0; i < ce.size(); i++){
+    for(int i = start; i < end; i++){
         Edge edge = ce.at(i);
         int x,y;
-        if (Dist[edge.a] > Dist[edge.b]){
+        if ((*arg).dist[edge.a] > (*arg).dist[edge.b]){
             x = edge.a;
             y = edge.b;
         }
@@ -132,10 +172,10 @@ void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent){
                 Affected[x] = true;
             }
         }
-            //if E is to be removed
+        //if E is to be removed
         else {
             //Check if Edge is in SSSP tree
-            if(Parent[edge.a] == edge.b || Parent[edge.b] == edge.a){
+            if((*arg).parent[edge.a] == edge.b || (*arg).parent[edge.b] == edge.a){
                 DistUpdated[x] = INF;
                 Affected[x] = true;
             }
@@ -145,14 +185,14 @@ void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent){
     bool change = true;
     while (change){
         change = false;
-        //TODO: Parallel
-        for(int i = 0; i < ce.size(); i++){
+        //Parallel Pthreads
+        for(int i = start; i < end; i++){
             Edge edge = ce.at(i);
             //if E marked to be inserted to SSSP
             if(edge.isPresent){
                 //Find the affected vertex, x
                 int x,y;
-                if (Dist[edge.a] > Dist[edge.b]){
+                if ((*arg).dist[edge.a] > (*arg).dist[edge.b]){
                     x = edge.a;
                     y = edge.b;
                 }
@@ -163,7 +203,7 @@ void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent){
                 //Check replaces higher weighted edge
                 if(DistUpdated[x] > DistUpdated[y] + Graph[edge.a][edge.b]){
                     DistUpdated[x] = DistUpdated[y] + Graph[edge.a][edge.b];
-                    Parent[x] = edge.b;
+                    (*arg).parent[x] = edge.b;
                     change = true;
                     Affected[x] = true;
                 }
@@ -175,18 +215,16 @@ void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent){
 //Algorithm 4: Step 2: Updating Affected Vertices in Parallel
 void *processVertexParallel(void *threadId){
     //PThreads impl
-    int start, end, numOfElements, id = (long )threadId;
+    int start, end, numOfElements, id = (long)threadId;
 
     numOfElements = V / NUM_THREADS;
-    start = NUM_THREADS * id;
+    start = numOfElements * id;
     //end condition for not 0 mod divisions
     if (id != NUM_THREADS - 1) {
         end = start + numOfElements;
     } else {
         end = V;
     }
-
-    //PThreads impl end
     bool change = true;
     while(change){
         change = false;
@@ -220,12 +258,4 @@ void *processVertexParallel(void *threadId){
             }
         }
     }
-    return 0;
-}
-
-void *PrintHello(void *args) {
-    struct threadArgs *arg= (struct threadArgs*)args;
-    int tid = (*arg).ThreadId;
-    cout << "Hello World! Thread ID, " << tid << endl;
-    pthread_exit(NULL);
 }

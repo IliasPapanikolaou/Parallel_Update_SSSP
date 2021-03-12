@@ -24,12 +24,14 @@ void updatePerChange(vector<Edge> ce, int * Dist, int * Parent);
 
 void processVertex(int u);
 
-//Algorithm 3 Step1: Processing Changed Edges in Parallel
-void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent);
+//Initialize Matrices Algorithm 3 (lines 2-5)
+void *initMatricesPThreads(void *args);
+//Initialize Matrices Algorithm 3 (lines 6-29)
+void *updateBatchChangePThreads(void *args);
 
 //Algorithm 4 Step 2: Updating Affected Vertices in Parallel
 void *processVertexParallel(void *threadid);
 
-void *PrintHello(void *args);
+
 
 #endif //ERGASIA2_UPDATESSSP_H
