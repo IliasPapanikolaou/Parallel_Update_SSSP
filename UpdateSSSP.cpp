@@ -57,7 +57,7 @@ void updatePerChange(vector<Edge> ce, int * Dist, int * Parent){
         }
     }
 
-    cout << "--------Affected Vertices---------" << endl;
+    cout << endl << "--------Affected Vertices---------" << endl;
     for(int i = 0; i < PQ.size(); i++){
         int v = PQ.at(i);
         cout << "affected vertex: " << v << " new Distance: " << DistUpdated[v] << endl;
@@ -71,7 +71,7 @@ void updatePerChange(vector<Edge> ce, int * Dist, int * Parent){
         processVertex(u);
     }
 
-    cout << "---------Updated SSSP-------------" << endl;
+    cout << endl << "---------Updated SSSP-------------" << endl;
     for (int i = 0; i < V; i++)
         cout << i << " distance is " << DistUpdated[i] << " parent " << ParentUpdated[i] << endl;
 }

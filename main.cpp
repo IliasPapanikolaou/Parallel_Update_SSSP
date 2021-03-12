@@ -64,7 +64,7 @@ void createAdjMatrix(){
 }
 
 void addOrSnapRandomEdges(int numOfEdges){
-    cout << "-------Changing some edges-------" << endl;
+    cout << endl << "-------Changing some edges-------" << endl;
     //initialize random seed
     srand(time(NULL));
     for(int i = 0; i < numOfEdges; i++){
@@ -93,7 +93,7 @@ void addOrSnapRandomEdges(int numOfEdges){
 }
 
 void printAdjacentMatrix(){
-    cout << "------------Adjacent matrix------------"<< endl;
+    cout << endl << "------------Adjacent matrix------------"<< endl;
     for(int i = 0; i < V; i++){
         for(int j = 0; j < V; j++){
             cout << Graph[i][j] << " ";
@@ -172,7 +172,7 @@ int main () {
     auto stopParallel = high_resolution_clock::now();
     auto durationParallel = duration_cast<microseconds>(stopParallel - startParallel);
 
-    cout << "---------Parallel Updated SSSP-------------" << endl;
+    cout << endl << "---------Parallel Updated SSSP-------------" << endl;
     for (int i = 0; i < V; i++)
         cout << i << " distance is " << DistUpdated[i] << " parent " << ParentUpdated[i] << endl;
 

@@ -21,7 +21,7 @@ int * Dijkstra::getParent(){
 
 //Print Distance and Parent matrices
 void Dijkstra::printSolution(int src) {
-    printf("---------Dijkstra Algorithm-------------\n");
+    printf("\n---------Dijkstra Algorithm-------------\n");
     printf("Edge Distance from Source (Vector %d):\n", src);
     for (int i = 0; i < V; i++)
         printf("%d distance from %d is %d parent %d\n", i, src, Dist[i], Parent[i]);
