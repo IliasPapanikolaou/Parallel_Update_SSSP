@@ -222,3 +222,10 @@ void *processVertexParallel(void *threadId){
     }
     return 0;
 }
+
+void *PrintHello(void *args) {
+    struct threadArgs *arg= (struct threadArgs*)args;
+    int tid = (*arg).ThreadId;
+    cout << "Hello World! Thread ID, " << tid << endl;
+    pthread_exit(NULL);
+}

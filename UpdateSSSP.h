@@ -12,6 +12,13 @@
 
 using namespace std;
 
+struct threadArgs{
+    int *dist;
+    int *parent;
+    std::vector<Edge> changedEdges;
+    int ThreadId;
+};
+
 //Algorithm 2: Updating SSSP for a Single Change
 void updatePerChange(vector<Edge> ce, int * Dist, int * Parent);
 
@@ -22,5 +29,7 @@ void updateBatchChange(vector<Edge> ce, int * Dist, int * Parent);
 
 //Algorithm 4 Step 2: Updating Affected Vertices in Parallel
 void *processVertexParallel(void *threadid);
+
+void *PrintHello(void *args);
 
 #endif //ERGASIA2_UPDATESSSP_H

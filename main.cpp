@@ -125,10 +125,24 @@ int main () {
     //Algorithm 2: Updating SSSP for a Single Change (Sequential Algorithm)
     updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
+    struct threadArgs args;
+    args.changedEdges = ce;
+    args.dist = dijkstra.getDist();
+    args.parent = dijkstra.getParent();
+
+    //Algorithm 3: Step 1 Processing Changed Edges in Parallel
     updateBatchChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
-    //Parallel Update with Pthreads :-(
+    //Parallel Update with Pthreads
     pthread_t threads[NUM_THREADS];
+
+    for(int i =  0; i < NUM_THREADS; i++){
+        args.ThreadId = i;
+        pthread_create(&threads[i], NULL, PrintHello, &args);
+    }
+    for (int i = 0; i < NUM_THREADS; i++) {
+        pthread_join(threads[i], NULL);
+    }
 
     //Algorithm 4: Step 2: Updating Affected Vertices in Parallel (PThreads)
     for(int i =  0; i < NUM_THREADS; i++){
