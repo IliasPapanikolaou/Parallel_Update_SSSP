@@ -123,10 +123,7 @@ int main () {
     //dijkstra.dijkstra(Graph, 0);
 
     //Algorithm 2: Updating SSSP for a Single Change (Sequential Algorithm)
-    updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
-
-    //Algorithm 3: Step 1 Processing Changed Edges in Parallel
-    //updateBatchChange(ce, dijkstra.getDist(), dijkstra.getParent());
+    //updatePerChange(ce, dijkstra.getDist(), dijkstra.getParent());
 
     //Parallel Update with Pthreads
     pthread_t threads[NUM_THREADS];
