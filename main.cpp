@@ -152,6 +152,7 @@ int main () {
     for (int i = 0; i < NUM_THREADS; i++) {
         pthread_join(threads[i], NULL);
     }
+    //Algorithm 3 Step1: Processing Changed Edges in Parallel
     for(int i =  0; i < NUM_THREADS; i++){
         args[i].ThreadId = i;
         pthread_create(&threads[i], NULL, updateBatchChangePThreads, (void*)&args[i]);
